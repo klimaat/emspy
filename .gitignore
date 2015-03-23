@@ -1,0 +1,14 @@
+# Compiled python modules.
+*.pyc
+
+# Setuptools distribution folder.
+/dist/
+/build/
+MANIFEST
+RELEASE-VERSION
+
+# My junkyard
+/junk/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg

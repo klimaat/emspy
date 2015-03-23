@@ -1,0 +1,53 @@
+GRIB1| Level| From |  To  | metgrid  |  metgrid| metgrid                                  |GRIB2|GRIB2|GRIB2|GRIB2|
+Param| Type |Level1|Level2| Name     |  Units  | Description                              |Discp|Catgy|Param|Level|
+-----+------+------+------+----------+---------+------------------------------------------+-----------------------+
+  11 | 100  |   *  |      | TT       | K       | Temperature                              |  0  |  0  |  0  | 100 |
+  33 | 100  |   *  |      | UU       | m s-1   | U                                        |  0  |  2  |  2  | 100 |
+  34 | 100  |   *  |      | VV       | m s-1   | V                  (from .3D file)       |  0  |  2  |  3  | 100 |
+  51 | 100  |   *  |      | SPECHUMD | kg kg-1 |                    (from .3D file)       |  0  |  1  |  0  | 100 |
+ 999 | 100  |   *  |      | SPECHUMD | kg kg-1 |                    (added)               |  0  |  1  |  0  | 103 |  
+  7  | 100  |   *  |      | HGT      | m       | Height                                   |  0  |  3  |  5  | 100 |
+  11 | 105  |   2  |      | TT       | K       | Temperature        (from .flx file)      |  0  |  0  |  0  | 103 |
+  52 | 105  |   2  |      | RH       | %       | Relative Humidity  (from .flx file)      |  0  |  1  |  1  | 103 |
+  33 | 105  |  10  |      | UU       | m s-1   | U                  (from .flx file)      |  0  |  2  |  2  | 103 |
+  34 | 105  |  10  |      | VV       | m s-1   | V                  (from .flx file)      |  0  |  2  |  3  | 103 |
+   1 |   1  |   0  |      | PSFC     | Pa      | Surface Pressure   (from .sfc file)      |  0  |  3  |  0  |   1 |
+ 999 |   1  |   0  |      | PSFC     | Pa      | Surface Pressure   (added)               |  0  |  3  |  0  | 103 |
+ 130 | 102  |   0  |      | PMSL     | Pa      | Sea-level Pressure (from .flx file)      |  0  |  3  |192  | 101 |
+  65 |  1   |   0  |      | SNOW     | kg m-2  | Water Equiv of Accum Snow Depth  (.sfc)  |  0  |  1  | 13  |   1 |
+  11 |  1   |   0  |      | SKINTEMP | K       | Sea-Surface Temperature (from .sfc file) |  0  |  0  |  0  |   1 |
+ 223 |  1   |   0  |      | CANWAT   | kg m-2  | Plant Canopy Surface Water (.sfc file)   |  2  |  0  | 196 |   1 |
+  85 | 112  |   0  | 10   | ST000010 | K       | T of 0-10 cm ground layer  (.flx file)   |  2  |  0  |  2  | 106 |
+  85 | 112  |  10  | 40   | ST010040 | K       | T of 10-40 cm ground layer (.flx file)   |  2  |  0  |  2  | 106 |
+  85 | 112  |  40  |100   | ST040100 | K       | T of 40-100 cm ground layer (.flx file)  |  2  |  0  |  2  | 106 |
+  85 | 112  | 100  |200   | ST100200 | K       | T of 100-200 cm ground layer (.flx file) |  2  |  0  |  2  | 106 |
+ 144 | 112  |  0   | 10   | SM000010 | fraction| Soil Moisture of 0-10 cm gnd layer (.flx)|  2  |  0  | 192 | 106 |
+ 144 | 112  | 10   | 40   | SM010040 | fraction| Soil Moisture of 10-40 cm ground layer   |  2  |  0  | 192 | 106 |
+ 144 | 112  | 40   |100   | SM040100 | fraction| Soil Moisture of 40-100 cm ground layer  |  2  |  0  | 192 | 106 |
+ 144 | 112  |100   |200   | SM100200 | fraction| Soil Moisture of 100-200 cm ground layer |  2  |  0  | 192 | 106 |
+  81 |  1   |   0  |      | LANDSEA  | proprtn | Land/Sea flag          (from .fixed file)|  2  |  0  |  0  |   1 |
+   7 |  1   |   0  |      | SOILHGT  | m       | Terrain from source analysis             |  0  |  3  |  5  |   1 |
+-----+------+------+------+----------+---------+------------------------------------------+-----------------------+
+#  XQ: RH for 3D at level 100 was not found in narrtile file, it was removed. The last two entries were not in the tile file as well.
+#
+#  North American Regional Reanalysis, 32 km (Grid 221), 29 p-levels (1000 - 100 hPa) plus sfc
+#  
+#  There is a mismatch between the landmask and the soil moisture fields along the
+#  western shore of Hudson Bay in the NARR output. To account for this problem, the
+#  following line should be added to the SM entries in METGRID.TBL 
+#  name= SM000010, SM010040, SM040100, SM100200
+#
+#       missing_value=-1.e30
+#
+#
+#   http://www.emc.ncep.noaa.gov/mmb/rreanl/
+#   http://www.cdc.noaa.gov/cdc/data.narr.html
+#
+#  The last 4 entries in the Vtable (LANDSEA, SOILHGT, SOILCAT, and VEGCAT) can be
+# obtained from the fixed files at http://wwwt.emc.ncep.noaa.gov/mmb/rreanl/index.html
+# (or from the NCAR archive), then 1) Run ungrib on the .fixed file and an initial time
+# of 1979-11-08_00.  2) rename the output file (NARR.CONSTANTS is a good choice;
+# i.e. mv FILE:1979-11-08_00 NARR.CONSTANTS) 3) Run ungrib on the .flx, .3D, and .sfc files
+# (or your NCDC grib files) 4) Run metgrid with constants_name = NARR.CONSTANTS in the namelist
+#
+#  Note that U and V in NARR output are earth relative
