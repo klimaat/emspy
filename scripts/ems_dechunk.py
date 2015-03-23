@@ -139,7 +139,7 @@ if __name__ == "__main__":
                 # Surface pressure
                 # WRF is in Pa
                 names.append(u'Surface Pressure')
-                data.append(np.round(w.extract('PSFC', i=ij[0], j=ij[1]), decimals=1) )
+                data.append(np.round(w.extract('PSFC', i=ij[0], j=ij[1]), decimals=2) )
                 units.append(u'Pa')
                 
                 # 10m winds
@@ -226,7 +226,7 @@ if __name__ == "__main__":
 
                     # The data
                     datarow = ['%d' % t.year, '%d' % t.month, '%d' % t.day, '%d' % (t.hour+1)] + \
-                                ['%.5g' % data[_][i] for _ in range(len(data))]
+                                ['%.6g' % data[_][i] for _ in range(len(data))]
                     ft.write((','.join(datarow)+'\n').encode('utf8'))
                         
                         
