@@ -150,13 +150,13 @@ class WRFDataset(object):
         # Transformation
         dlon = center(lon - self.stand_lon)
 
-        i = self.polei + self.hemi*rm*np.sin(self.cone*np.radians(dlon))
-        j = self.polej - rm*np.cos(self.cone*np.radians(dlon))
-
+        x = self.polei + self.hemi*rm*np.sin(self.cone*np.radians(dlon))
+        y = self.polej - rm*np.cos(self.cone*np.radians(dlon))
+        
         # Return integer
         # ... and correcting for hemisphere (hopefully)
         # ... and switch to zero-indexing
-        return np.rint(self.hemi*i).astype(int)-1, np.rint(self.hemi*j).astype(int)-1
+        return np.rint(self.hemi*y).astype(int)-1, np.rint(self.hemi*x).astype(int)-1
 
     def alpha(self, lat, lon):
         """
