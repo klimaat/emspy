@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import glob
 import argparse
 import datetime
@@ -21,12 +20,11 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
         )
 
-    parser.add_argument('domain',
-        help='specify root domain')
+    parser.add_argument('domain', help='specify root domain')
 
     parser_location = parser.add_mutually_exclusive_group(required=True)
 
-    parser_location.add_argument('-ll', dest='ll', metavar=('lat','lon'), nargs=2,
+    parser_location.add_argument('-ll', dest='ll', metavar=('lat', 'lon'), nargs=2,
         type=float, help='specify lat lon of desired location')
 
     parser_location.add_argument('-ij', dest='ij', metavar=('i', 'j'), nargs=2,
@@ -102,7 +100,7 @@ if __name__ == "__main__":
                 if args.ll:
                     ij = w.ll2ij(*args.ll)
                 else:
-                    ij = args.ij
+                    ij = (args.ij[0]-1, args.ij[1]-1)
 
                 # Snap to latitude and longitude based on grid found
                 ll = w.ij2ll(*ij)
@@ -116,30 +114,29 @@ if __name__ == "__main__":
                 names = []
                 data = []
                 units = []
-                fmts = []
 
                 # Screen temperature (2m drybulb)
                 # WRF is Kelvin; convert to Celsius
-                names.append( u'Drybulb Temperature' )
-                data.append( np.round(w.extract('T2', i=ij[0], j=ij[1]) - 273.15, decimals=1) )
-                units.append( u'C' )
+                names.append(u'Drybulb Temperature')
+                data.append(np.round(w.extract('T2', i=ij[0], j=ij[1]) - 273.15, decimals=1))
+                units.append(u'C')
 
                 # Screen humidity ratio (2m)
                 # WRF is kg/kg (dry air); convert to g/kg (dry air)
                 names.append(u'Humidity Ratio')
-                data.append( np.round(w.extract('Q2', i=ij[0], j=ij[1])*1000., decimals=2) )
+                data.append(np.round(w.extract('Q2', i=ij[0], j=ij[1])*1000., decimals=2))
                 units.append(u'g/kg')
 
                 # Screen relative humidity
                 # WRF is fraction [0,1]; convert to percentage
                 names.append(u'Relative Humidity')
-                data.append(np.round(w.extract('RH02', i=ij[0], j=ij[1])*100., decimals=0) )
+                data.append(np.round(w.extract('RH02', i=ij[0], j=ij[1])*100., decimals=0))
                 units.append(u'%')
 
                 # Surface pressure
                 # WRF is in Pa
                 names.append(u'Surface Pressure')
-                data.append(np.round(w.extract('PSFC', i=ij[0], j=ij[1]), decimals=2) )
+                data.append(np.round(w.extract('PSFC', i=ij[0], j=ij[1]), decimals=2))
                 units.append(u'Pa')
 
                 # 10m winds
@@ -149,11 +146,11 @@ if __name__ == "__main__":
                 (U10, V10) = w.rotate(U10, V10, ll[0], ll[1])
                 # Convert to wind speed; m/s
                 names.append(u'Wind Speed')
-                data.append( np.round(np.sqrt(U10**2+V10**2), decimals=1) )
+                data.append(np.round(np.sqrt(U10**2+V10**2), decimals=1))
                 units.append(u'm/s')
                 # Convert to wind direction; degrees CW from North (azimuth/compass)
                 names.append(u'Wind Direction')
-                data.append( np.round(np.mod(90 - np.degrees(np.arctan2(-V10,-U10)), 360), decimals=0) )
+                data.append(np.round(np.mod(90 - np.degrees(np.arctan2(-V10, -U10)), 360), decimals=0))
                 units.append(u'deg')
 
                 # Shortwave down or Global Horizontal Radiation
@@ -163,7 +160,7 @@ if __name__ == "__main__":
                 names.append(u'Global Horizontal Radiation')
                 SWDOWN = w.extract('SWDOWN', i=ij[0], j=ij[1])
                 SWDOWN[1:] = (SWDOWN[1:] + SWDOWN[0:-1])/2.0
-                data.append(np.round(SWDOWN, decimals=0) )
+                data.append(np.round(SWDOWN, decimals=0))
                 units.append(u'Wh/m2')
 
                 # Precipitation is total accumulated since *start of sim*
@@ -191,7 +188,7 @@ if __name__ == "__main__":
                 if header:
 
                     # Form fileName
-                    fileName = '%s/%s_i%02d_j%02d.csv' % (ems_run_dir(), args.domain, ij[0], ij[1])
+                    fileName = '%s/%s_i%02d_j%02d.csv' % (ems_run_dir(), args.domain, ij[0]+1, ij[1]+1)
 
                     # Latitude, Longitude, Elevation
                     XLAT = w.extract('XLAT', i=ij[0], j=ij[1], t=0)
@@ -200,16 +197,15 @@ if __name__ == "__main__":
 
                     # Write out some information about the location
                     ft.write(('# %s %.4f degN %.4f degE %.1f m\n' %
-                            (args.domain, XLAT, XLON, HGT)
-                            ).encode('utf8')
-                        )
+                        (args.domain, XLAT, XLON, HGT)).encode('utf8')
+                    )
 
                     # The variables
-                    names = ['Year','Month','Day','Hour'] + names
+                    names = ['Year', 'Month', 'Day', 'Hour'] + names
                     ft.write((','.join(names)+'\n').encode('utf8'))
 
                     # The units
-                    units = ['yyyy','mm','dd','hh'] + units
+                    units = ['yyyy', 'mm', 'dd', 'hh'] + units
                     ft.write((','.join(units)+'\n').encode('utf8'))
 
                     header = False
@@ -226,13 +222,11 @@ if __name__ == "__main__":
 
                     # The data
                     datarow = ['%d' % t.year, '%d' % t.month, '%d' % t.day, '%d' % (t.hour+1)] + \
-                                ['%.6g' % data[_][i] for _ in range(len(data))]
+                        ['%.6g' % data[_][i] for _ in range(len(data))]
                     ft.write((','.join(datarow)+'\n').encode('utf8'))
-
 
         # Grab temporary file name
         tmpFileName = ft.name
 
     # Move temp to perm
     os.rename(tmpFileName, fileName)
-
