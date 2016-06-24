@@ -1,8 +1,8 @@
 # emspy
 
-A collection of Python scripts to aide in mesoscale modelling using WRF EMS:
+A collection of Python scripts to aide in mesoscale modelling using UEMS:
 
-<http://strc.comet.ucar.edu/software/newrems/>
+<http://strc.comet.ucar.edu/software/uems/>
 
 ## Instructions
 
