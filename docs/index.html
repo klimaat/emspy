@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Generating site-specific meteorological data using mesoscale modelling</title>
+    <meta name="description" content="A procedure to generate site-specific meteorological data using mesoscale modelling." />
+    <meta name="keywords" content="WRF, EMS, climate, emspy, python, ASHRAE" />
+    <meta name="author" content="Klimaat" />
+    <link href="/favicon.ico" rel="shortcut icon" type="image/ico" />
+    <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/yeti/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/tweaks.css" rel="stylesheet" />
+</head>
+
+<body data-spy="scroll" data-target=".scrollspy">
+
+<div class="container">
+
+<div class="row">
+
+<div class="col-md-3 scrollspy">
+
+    <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+
+        <li><a href="#introduction">Introduction</a>
+        <ul class="nav">
+            <li><a href="#requirements">Requirements</a></li>
+            <li><a href="#disclaimer">Disclaimer</a></li>
+        </ul>
+        </li>
+
+        <li><a href="#installation">Installation</a>
+        <ul class="nav">
+            <li><a href="#java">Installing Java</a></li>
+<!--
+            <li><a href="#wget">Installing wget</a></li>
+-->
+            <li><a href="#ems">Installing UEMS</a></li>
+            <li><a href="#panoply">Installing Panoply</a></li>
+            <li><a href="#git">Installing git</a></li>
+            <li><a href="#netcdf">Installing netcdf</a></li>
+            <li><a href="#emspy">Installing emspy</a></li>
+<!--
+            <li><a href="#tweaking">Tweaking your EMS</a></li>
+-->
+        </ul>
+        </li>
+
+        <li><a href="#data">Data</a>
+        <ul class="nav">
+            <li><a href="#tiles">Tiling Your Data</a></li>
+<!--
+            <li><a href="#pre-fetch">Pre-Fetching Your Data</a></li>
+-->
+        </ul>
+        </li>
+
+        <li><a href="#setup">Setup</a>
+        <ul class="nav">
+            <li><a href="#EMS_RUN">Tweaking your Working Directory</a></li>
+            <li><a href="#dwiz">Establishing Your Domain</a></li>
+        </ul>
+        </li>
+
+        <li><a href="#computation">Computation</a>
+        <ul class="nav">
+            <li><a href="#chunk">Chunking Your Domain</a></li>
+            <li><a href="#timing">Timing Your Simulation</a></li>
+            <li><a href="#advanced">Configuring Your Simulation</a></li>
+        </ul>
+        </li>
+
+        <li><a href="#postp">Post-Process</a>
+        <ul class="nav">
+            <li><a href="#dechunk">De-chunking Your Domain</a></li>
+        </ul>
+        </li>
+
+        <li><a href="#feedback">Feedback</a>
+        </li>
+
+    </ul>
+</div> <!-- close col-md-2 -->
+
+<div class="col-md-9">
+
+<!-- TITLE -->
+
+<h1 class="text-center">
+Generating site-specific meteorological data using mesoscale modelling
+</h1>
+
+<div class="text-muted">
+    <p class="text-center"><small>July 1, 2016</small></p>
+</div>
+
+<div id="update" class="alert alert-info" role="alert">
+    Please note that this guide has recently been revised based on the latest updates to UEMS (see <a href="http://strc.comet.ucar.edu/software/uems/uems_announcements.htm">UEMS version 15.58, the "Apples to Xerotic" release.</a>).  It is currently undergoing some extended alpha testing over the Canary Islands to support some <a href="http://www.ulster.ac.uk/es/dune-research-in-the-canary-islands/">research</a>.
+</div>
+
+<!-- INTRODUCTION -->
+
+<hr/>
+
+<section id="introduction">
+
+<h2>Introduction</h2>
+
+    <p>This guide is a step-by-step procedure for the generation of hourly meteorological data at a desired geographical location through the setup, running and post-processing of a mesoscale weather numerical model.</p>
+
+    <p>This guide was developed as a result of a project by <a href="http://www.novusenv.com">Novus</a> and <a href="http://klimaat.ca">Klimaat</a> and sponsored by <a href="https://www.ashrae.org/">ASHRAE</a> through <a href="https://tc0402.ashraetcs.org/">Technical Committee 4.2</a>.</p>
+
+    <p>The two specific goals of this project were:</p>
+
+    <ul>
+        <li>To develop a mesoscale model-based methodology to provide estimated hourly climate/weather data for up to a 25-year period for a user-defined latitude/longitude point
+        <li> To provide validation of the methodology over various terrain categories such as coast, mountain valley, mountain plateaus, and urban centers
+    </ul>
+
+    <p>More details on the project, is provided in the final report: <a href="pdf/20150805-ASHRAE-1561-RP-Final-Report.pdf">main body (3.5MB)</a> &amp; <a href="pdf/20150805-ASHRAE-1561-RP-Final-Report-Appendices.pdf">appendices (14.9MB)</a>.</p>
+
+    <section id='requirements'>
+
+        <h3>Requirements</h3>
+
+        <p>This guide relies on a number of key requirements:</p>
+
+        <ul>
+            <li> A working knowledge of a recent Linux operating system such as <a href="http://www.ubuntu.com/">Ubuntu 14.04 or 16.04</a>
+            <li> A high performance computer workstation with about 8GB of RAM and 2TB of storage
+            <li> Installing the software prerequisites</li>
+            <li> Patience!
+        </ul>
+
+    </section>
+
+    <section id='disclaimer'>
+
+        <h3>Disclaimer</h3>
+
+        <p>The software referred to in this procedure is <u>under continuous development</u>.  It is expected that the instructions contained here are subject to change and relevant to WRF simulations circa 2016.</p>
+
+        <p>Neither Klimaat nor ASHRAE warrant that the information in this guide is free of errors. This information is provided <q>as is</q> without warranty of any kind, either expressed or implied. The entire risk as to the quality and performance of the program and data is with you. In no event will ASHRAE or the program developer be liable to you for any damages, including without limitation any lost profits, lost savings, or other incidental or consequential damages arising out of the use of or inability to use this information.
+        </p>
+
+    </section>
+
+    <p>With all that out of the way, let's get the software installed.</p>
+
+</section>
+
+<hr/>
+
+
+<!-- INSTALLATION -->
+<section id="installation">
+
+    <h2>Installation</h2>
+
+    <p>In this section we describe the installation of the required software.</p>
+
+    <section id='java'>
+
+        <h3>Installing Java</h3>
+
+        <p>A recent version of the <a href="https://help.ubuntu.com/community/Java">Java</a> runtime environment, e.g. version 7, is required for some of the graphical applications such as <q>Domain Wizard</q> and <q>Panoply</q>.  It is typically easily installed through a given Linux distribution's package manager.  For example, on Debian-based systems (e.g. Ubuntu), it can be installed via</p>
+
+        <pre>
+sudo apt-get install default-jre
+</pre>
+
+        <p>Your mileage may vary.</p>
+
+    </section>
+
+<!--
+    <section id='wget'>
+
+        <h3>Installing wget</h3>
+
+        <p><a href="http://www.gnu.org/software/wget/">wget</a> is a program for downloading files from the command line and is required for some of the provided scripts to download reanalysis data.  Note:  it may already be installed.  For Debian systems, try the following</p>
+
+        <pre>
+sudo apt-get install wget
+</pre>
+
+    </section>
+-->
+
+    <section id='ems'>
+
+        <h3>Installing UEMS</h3>
+
+        <p>The crucial element of this entire process is the <a href="http://strc.comet.ucar.edu/software/uems/">STRC UEMS</a> software package. UEMS contains all the functionality of the advanced mesoscale modelling software <a href="http://www.wrf-model.org/index.php">WRF</a>, yet with a much simplified installation, configuration, and execution.  It is maintained by the good people at UCAR, particularly Robert Rozumalski.</p>
+
+        <p>Clear and colourful instructions on how to install and use UEMS can be found at the <a href="http://strc.comet.ucar.edu/software/uems/">UEMS website</a>.</p>
+
+        <p>The four main steps are:</p>
+
+        <ol>
+
+            <li>
+            <p><a href="http://strc.comet.ucar.edu/software/uems/registration/registration.htm">Registering</a> in order to receive a Perl installation script <code>uems_install.pl</code>.</p>
+
+            <li>
+            <p> Running the script to install on your computer based on the instructions in the  <a href="http://strc.comet.ucar.edu/software/uems/uems_userguide.htm">users guide</a>, especially <a href="http://strc.comet.ucar.edu/software/uems/userguide/emsguideV15_chapter02.pdf">Chapter 2 (PDF)</a>.</p>
+
+            <p>For the impatient, this involves opening a terminal window and typing:</p>
+
+            <pre>
+perl uems_install.pl --install
+</pre>
+
+            <p>The main decision will be where to install (e.g. <code>/home/jeeves/</code>).  Make sure you provide an absolute path, i.e. starting with <code>/</code>.</p>
+
+            <p><code>uems_install.pl</code> will then proceed to download and install approximately 20GB, so ensure sufficient space is available in the chosen installation directory.  The largest portion is reserved for world-wide static high-resolution (30 seconds of arc) data such as topography and land-use classes.  Coffee time!</p>
+
+            <li>
+                <p>UEMS adds some code to your <code>~/.bash_profile</code> which sets a few environment variables and adds the UEMS scripts to your path.  Note that the commands in <code>~/.bash_profile</code> are not executed until you are running a <strong>login</strong> terminal.  Most new terminals opened on the desktop are not in fact login terminals.  Thus, I find it more useful to move the relevant lines into <code>~/.bashrc</code>, which is typically <strong>always</strong> executed.  The relevant lines in <code>~/.bash_profile</code> resemble:</p>
+
+                <pre>
+if [ -f /home/jeeves/uems/etc/EMS.profile ] ; then
+    source /home/jeeves/uems/etc/EMS.profile
+fi
+</pre>
+                <p>Move them over to <code>~/.bashrc</code> and open a new terminal which should activate your environment variables.  You can confirm proper configuration by typing the following at the command line:</p>
+            <pre>
+echo $EMS
+</pre>
+
+            <p>This should result in something like:</p>
+
+            <pre>
+/home/jeeves/uems
+</pre>
+
+            <p>
+                Your mileage may vary.
+            </p>
+            <li>
+            <p>Confirming installation by running a benchmark simulation.  Full instructions can be found in <a href="http://strc.comet.ucar.edu/software/uems/userguide/emsguideV15_appendixB.pdf">Appendix B (PDF)</a>.   The steps are essentially</p>
+
+            <pre>
+cd $EMS_UTIL/benchmark/27april2011
+ems_prep --benchmark --domain 2
+ems_run --domain 2
+</pre>
+            <p><code>ems_prep</code> will setup the benchmark simulation, indicating success with something like "Your awesome EMS Prep party is complete".  <code>ems_run</code> will run the benchmark, taking a few hours to do so.
+            </p>
+        </ol>
+
+
+    </section>
+
+
+
+    <section id='panoply'>
+
+        <h3>Installing Panoply (Optional)</h3>
+
+        <p><a href="http://www.giss.nasa.gov/tools/panoply/">Panoply</a> is a Java-based application that plots geo-gridded and other arrays from netCDF, HDF, GRIB, and other datasets.  GRIB is the file format of input files to WRF while netCDF is the file format for WRF output files.</p>
+
+        <p> An older version of Panoply ships with UEMS and is used by <q>Domain Wizard</q> when viewing your domains.  However, the new Panoply has a number of features that make it worthwhile to download separately.  Instructions can be found <a href="http://www.giss.nasa.gov/tools/panoply/download.html">here</a>.</p>
+
+        <p>To be able to run Panoply from anywhere, add an <q>alias</q> in your <code>~/.bashrc</code>:</p>
+
+        <pre>
+alias panoply=/path/to/PanoplyJ/panoply.sh
+</pre>
+
+        <p>Open a new terminal and type <code>panoply</code> to test your installation.  If successful, you should be able to load the files from your benchmark run.</p>
+
+<!--
+        <p>For example, for the input GRIB files used, <q>Open</q> one of the <code>.grb2</code> files located in <code>/wooster/wrfems/util/benchmark/arw_small/grib/</code>, select one of the available Datasets, click <q>Create Plot</q>, click <q>Create</q> to accept the default plot type, and you should see something like:</p>
+
+        <figure>
+            <img src="img/albedo_grib.png" alt="GRIB Albedo" width="600" class="img-responsive center-block">
+            <figcaption>GRIB Albedo</figcaption>
+        </figure>
+-->
+
+        <p>For the output WRF netCDF files generated, <q>Open</q> one of the files located in <code>$EMS_UTIL/benchmark/27april2011/wrfprd</code>.  Note that you will not see any files listed until you list files of type <q>All Files</q>. Unfortunately, WRF generates files with an empty extension, without the expected netCDF <code>.nc</code> extension.  Select one of the available Datasets (e.g. T2), click <q>Create Plot</q>, click <q>Create</q> to accept the default plot type, and you should see something like:</p>
+
+        <figure>
+            <img src="img/benchmark.png" alt="WRF Albedo" width="600" class="img-responsive center-block" />
+            <figcaption>Benchmark Drybulb Temperature @ 2m (Kelvin)</figcaption>
+        </figure>
+
+        <p>The postage-stamp-size rectangle in the above image represents the largest domain (d01) that was solved in the benchmark simulation.  You can adjust map properties and projection to zoom into the domain.</p>
+
+    </section>
+
+    <section id="git">
+
+        <h3>Installing git (Optional)</h3>
+
+            <p><a href="http://www.git-scm.com/">git</a> is a <q>distributed version control system</q>.  Installing git will allow you to both download or <q>clone</q> the source code  from <a href="https://github.com/">github</a> for some of the packages below, plus <u>allow you to keep them up to date.</u> or <q>fork</q> the source code if you want to make personal changes.</p>
+
+            <p>If you do not have it installed, use your favourite Linux package installation method.  e.g. on Debian (Ubuntu) systems:</p>
+
+                <pre>
+sudo apt-get install git
+</pre>
+
+            <p>We mark this installation as optional as for every repository on github, there is an option to kick it ol' school by downloading a ZIP file containing the source.</p>
+
+    </section>
+
+    <section id="netcdf">
+
+        <h3>Installing netcdf</h3>
+
+        <p>In order to read the WRF data files, we need to install the <a href="https://github.com/Unidata/netcdf4-python">netcdf4-python</a> package.  You have two paths:
+
+        <ul>
+        <li><u>Short:</u>  On recent distributions (e.g. Ubuntu 16.04), this is as simple as:</p>
+
+        <pre>
+sudo apt-get install python-netcdf4
+</pre>
+
+        <p>If that is successful, your <code>netcdf</code> installation is complete.
+        </li>
+
+        <li><u>Long:</u> Unfortunately, on earlier distributions (e.g. Ubuntu 14.04), you will need to compile this yourself.</p>
+
+        <p><code>python-netcdf4</code> itself has a number of prerequisites:  we need to install <code>numpy</code>, <code>cython</code>, <code>netcdf4</code>, and <code>hdf5</code>:</p>
+        <ul>
+            <li>
+                <p><a href="http://www.numpy.org/">numpy</a>:  This is a Python package offering many of the features and delights of Matlab&reg;</p>
+            </li>
+            <li>
+                <p><a href="http://cython.org/">cython</a>:  This is a C-compiler for Python to make things go fast, fast, fast</p>
+            </li>
+            <li>
+                <p><a href="http://www.unidata.ucar.edu/software/netcdf/">libnetcdf4-dev</a>:  This provides the API library to read and write the NetCDF files used to store WRF data
+             </li>
+            <li><a href="http://www.hdfgroup.org/">libhdf5-dev</a>:  This provides the compression algorithms used in newer NetCDF files.</li>
+        </ul>
+
+        <p>To install these packages, on recent Debian-based systems</p>
+        <pre>
+sudo apt-get install python-numpy cython libnetcdf-dev libhdf5-dev python-dev
+</pre>
+
+        <p>Finally, to download <code>python-netcdf4</code>, either <q>git</q> it</p>
+
+        <pre>
+git clone https://github.com/Unidata/netcdf4-python.git
+</pre>
+
+        <p>or grab the source code by clicking on <q>Download ZIP</q> after clicking on <q>Clone or download</q> at the <a href="https://github.com/Unidata/netcdf4-python">github repository</a> and unzipping into a suitable directory.</p>
+
+        <p>Then installation is via</p>
+
+        <pre>
+cd netcdf4-python
+python setup.py build
+sudo python setup.py install
+</pre>
+
+        <p>The big benefit of using git: when the package is updated, you can simply go to the directory and <q>pull</q> all the changes</p>
+
+        <pre>
+cd netcdf4-python
+git pull
+python setup.py build
+sudo python setup.py install
+</pre>
+
+        <p>As a bonus, <code>python-netcdf4</code> provides a script called <code>nc3tonc4</code> which will compress existing WRF output files by about a third.</p>
+
+        </li>
+        </ul>
+    </section>
+
+    <section id="emspy">
+
+        <h3>Installing emspy</h3>
+
+        <p>UEMS <u>vastly</u> simplifies WRF modelling.  We take this one (baby) step further by providing Python code to aide in the splitting up of large simulations in multiple <q>chunks</q>, and the subsequent collation or <q>dechunking</q> of the results into a coherent time series.</p>
+
+        <p>This software, called <code>emspy</code>, is hosted on <a href="https://github.com/klimaat/emspy">github</a> repository.  This repository allows us to respond as new versions of UEMS are released (and to fix the resulting many bugs).</p>
+
+        <p>As per <code>python-netcdf4</code>, you can either <q>git</q> it:</p>
+
+        <pre>
+git clone https://github.com/klimaat/emspy.git
+</pre>
+
+        <p>Or, just click <q>Download ZIP</q> at <a href="https://github.com/klimaat/emspy">github</a>.</p>
+
+        <p><code>empsy</code> has been simplifed into just two executable Python scripts.  You have two ways to operate:</p>
+        <ul>
+            <li>
+                Copy the files to the directory in which you plan to run the simulations.  This would be useful if you plan on customizing some of the default options; or,
+            </li>
+            <li>
+                Point your PATH at the directory where you downloaded/git'd <code>emspy</code>. That is, add the following to your <code>~/.bashrc</code>
+                <pre>
+export PATH=$PATH:/directory/where/emspy/exists
+</pre>
+            </li>
+        </ul>
+
+        <p><code>emspy</code> is now ready to use.  Test installation by typing</p>
+
+        <pre>
+ems_chunk.py -h
+</pre>
+
+        <p>Which should return the usage and command-line switches for <code>ems_chunk.py</code>.</p>
+
+        <p>Warning:  This code was written by engineers not professional coders.  It is likely to be brimming with bugs.  As <code>emspy</code> evolves, it can be updated via</p>
+
+        <pre>
+cd /directory/where/emspy/exists
+git pull
+</pre>
+
+        <p>We also encourage you to peruse and modify the code as you see fit.  Suggestions are welcome.</p>
+
+    </section>
+
+<!--
+    <section id='tweaking'>
+
+        <h3>Tweaking Your EMS</h3>
+
+        <p>There are a number of files in the default installation that require <q>tweaking</q>.  Go to the <code>patch</code> directory in your <code>emspy</code> directory and type.</p>
+
+        <pre>
+bash patch.sh
+</pre>
+
+        <p>This will modify a few of the WRF EMS files to deal with a few bugs, mostly dealing with the North American Regional Renalysis (NARR).</p>
+
+
+    </section>
+-->
+        <p>Congratulations, you are done installing the software.  Now let's talk about <q>Data</q>.</p>
+
+
+</section>
+
+<hr/>
+
+<!-- DATA -->
+
+<section id="data">
+
+    <h2>Data</h2>
+
+    <p>Your WRF model must be coupled with the output of another three-dimensional model dataset, one with greater area coverage:</p>
+
+    <ul>
+        <li> The larger model is interpolated to your smaller regional model and serves as the initial state of your atmosphere: the <q>initial conditions</q>.
+
+        <li> The larger model also provides the air masses that enter your domain along the lateral boundaries as the simulation evolves: the <q>boundary conditions</q>.
+
+        <li> The larger model also constrains the coarsest domain of the model to remain within the right ballpark:  <q>nudging</q>.
+
+    </ul>
+
+    <p>For historical simulations, there are a number of re-analysis datasets which are large scale weather models which have assimilated observations and dynamically interpolated observations to a regular grid.  Two we recommend and that are pre-configured for use with WRF-EMS are:</p>
+
+    <ol>
+        <li> <a href="http://www.emc.ncep.noaa.gov/mmb/rreanl/">NARR</a>:  The North American Regional Reanalysis provides historical data from 1979 to present over North America, including Hawaii, Central America, and most of the Caribbean.  This data is at a nominal resolution of 32 km and is available every three hours.</li>
+        <li> <a href="http://cfs.ncep.noaa.gov/cfsr/">CFSR</a>:  The Climate Forecast System Reanalysis provides historical data from 1979 to present over the entire globe.  This data is at a resolution of 0.5&deg;&times;0.5&deg; or approximately 55km and is available every six hours.</li>
+    </ol>
+
+    <div class="row">
+        <div class="col-md-6">
+        <figure>
+            <img src="img/dewpoint_narr.png" alt="NARR Dewpoint" width="600" class="img-responsive center-block" />
+            <figcaption>NARR Dewpoint</figcaption>
+        </figure>
+        </div>
+        <div class="col-md-6">
+        <figure>
+            <img src="img/dewpoint_cfsr.png" alt="CFSR Dewpoint" width="600" class="img-responsive center-block" />
+            <figcaption>CFSR Dewpoint</figcaption>
+        </figure>
+        </div>
+    </div>
+
+    <p>Other datasets are possible, including <a href="http://gmao.gsfc.nasa.gov/research/merra/intro.php">MERRA</a> or <a href="http://www.ecmwf.int/">ECWMF</a>.  While ECWMF is available, MERRA is not currently configured for UEMS.</p>
+
+    <section id='tiles'>
+
+        <h3>Tiling Your Data</h3>
+
+        <p>UEMS will automatically download files as needed.  However, these datasets are enormous: e.g. a <u>single</u> year of NARR or CFSR requires approximately 50GB.  This, even after the extraneous variables were culled by the good people at UCAR.</p>
+
+        <p>UEMS thus provides an attractive option: the so-called <q>personal tile</q> method.  In this method only a small subset (tile) of data is downloaded, i.e. bounded by the extents of your largest domain and only the variables needed, resulting in files that are 1% of the size.  These datasets will be referred to as <q>narrpt</q> and <q>cfsrpt</q>.</p>
+
+    </section>
+
+    <!--
+    <section id='pre-fetch'>
+
+        <h3>Pre-Fetching Your Data</h3>
+
+        <p>However, the tiling method comes at a risk:  as the servers are not considered <q>operational</q>, they are at a lower priority, and thus tiles may not be available when you need them.  Also, if you anticipate running simulations for many locations, e.g. New York and San Francisco, it is perhaps better to download the Full Monty 50GB datasets.  These datasets will be referred to as simply <q>narr</q> and <q>cfsr</q>.</p>
+
+        <p>WRF EMS will automatically download files as needed.  However, for the long, multi-year runs, we recommend downloading the data beforehand for the years required and placing them in a special data directory.  This avoids downloading the large files repeatedly when simply running a different site domain.  Note: this pre-download is not applicable for personal tiles.</p>
+
+        <p>To download NARR and CFSR, as required, <code>ems-python</code> provides two handy Python download scripts:  <code>ems_narr.py</code> and <code>ems_cfsr.py</code>.  These scripts are designed to download from the UCAR servers based on year and month specified. Command line usage of these utilities can be found via</p>
+
+        <pre>
+ems_narr.py -h
+</pre>
+
+        <p>To use, create a directory where you have ample space, and <code>cd</code> into it.  If, say, we were interested in the years 1999 and 2000 and perhaps just January and February, you can download using:</p>
+
+        <pre>
+ems_cfsr.py -y 1999 2000 -m 1 2 -l 500
+</pre>
+
+        <p>This would limit the bandwidth to 500 kbps.  All options are, well, <q>optional</q>.  By default, it will download all years, all months, as fast as bandwidth will allow.</p>
+
+        <p>At this point you need to tell EMS where you've placed the files you've just downloaded.  This involves tweaking a few <code>grib_info</code>files:</p>
+
+        <pre>
+cd $EMS_CONF/grib_info
+</pre>
+
+        <p>Pull up <code>cfsr_gribinfo.conf</code> in your favourite editor and look for a section with a <code>SERVER-NFS</code> line.  Remove the # and modify the path according to your CFSR installation.</p>
+
+        <pre>
+SERVER-NFS = LOCAL:/home/jeeves/cfsr/YYYY/MM/pgbh00.cfsr.YYYYMMDDHH.grb2
+</pre>
+
+        <p>Of course, change <code>/home/jeeves/cfsr</code> in the above to wherever you created your CFSR directory.</p>
+
+        <p>Repeat for <code>narr_gribinfo.conf</code> but make the following line active and pointing to the correct NARR directory.</p>
+
+        <pre>
+SERVER-NFS = LOCAL:/home/jeeves/narr/YYYY/MM/narr-a_221_YYYYMMDD_HH00_000.grb2
+</pre>
+
+    </section>
+    -->
+
+    <p>Okay, let's start setting up your simulation.</p>
+
+</section>
+
+<hr/>
+
+<!-- SETUP -->
+<section id="setup">
+
+    <h2>Setup</h2>
+
+        <section id="EMS_RUN">
+
+        <h3>Tweaking Your Working Directory (Optional)</h3>
+
+        <p>By default, all your <q>run</q> files are stored in a directory pointed to by the environment variable <code>$EMS_RUN</code>.  This will be setup by default to a <code>runs</code> directory under the main UEMS installation directory.  However, you may want to point this environment variable to another location, perhaps where you have a large network drive.  To do this, you will need to add a line below to where you modified the <code>~/.bashrc</code> script previously </p>
+
+        <pre>
+export EMS_RUN=/path/to/another/folder
+</pre>
+        </section>
+
+        <section id="dwiz">
+
+        <h3>Establishing Your Domain</h3>
+
+        <p>The first step in getting a simulation setup is establishing a series of grids of increasing resolution and decreasing size centered on your chosen latitude/longitude and then interpolating static quantities such as topography, monthly vegetation, and land-use.  This is all accomplished through a graphical tool called <q>Domain Wizard</q>.</p>
+
+        <ol>
+
+            <li>
+
+                <p>First start the Domain Wizard:</p>
+
+                <pre>
+dwiz &
+</pre>
+            </li>
+
+            <li>
+
+                <p>You will be presented with a window dialog.  Click <q>Continue</q> to <q>Create New Domain</q></p>
+
+                <figure>
+                    <img src="img/dwiz_001.png" alt="Create New Domain" width="600" class="img-responsive center-block" />
+                    <figcaption>Create New Domain</figcaption>
+                </figure>
+
+            </li>
+
+            <li>
+
+                <p>Enter a domain <q>Name</q> and <q>Description</q>.  The Name will be used as a directory name so keep it simple  (e.g. <q>atlanta</q> or <q>new_york</q>).  Use _ as a space. Click <q>Continue</q>.</p>
+
+                <figure>
+                    <img src="img/dwiz_002.png" alt="Name and Description" width="600" class="img-responsive center-block" />
+                    <figcaption>Name and Description</figcaption>
+                </figure>
+
+            </li>
+
+            <li>
+
+                <p>Drag a rectangle, centered around your location, approximately 30&deg;&times;30&deg;.  Size doesn't matter as we will be adjusting it in the next steps.</p>
+
+                <p>Under <q>Projection Options</q>, <q>Type</q> will be now be highlighted.  Select <q>Lambert Conformal.</q></p>
+
+                <p>Enter the longitude and latitude of your desired center point under <q>Centerpoint Lon</q> and <q>Centerpoint Lat</q>, respectively.  At this point you should see something like this:</p>
+
+                <figure>
+                    <img src="img/dwiz_003.png" alt="Selecting Parent Domain" width="600" class="img-responsive center-block" />
+                    <figcaption>Selecting Parent Domain</figcaption>
+                </figure>
+
+            </li>
+
+            <li>
+
+                <p>Click <q>Update Map</q> and then enter:</p>
+
+                <ul>
+                    <li><p>Horizontal Dimension X: 70</p></li>
+                    <li><p>Horizontal Dimension Y: 70</p></li>
+                    <li><p>Grid points distance (km): 36</p></li>
+                    <li><p>Geographic data resolution: 10m</p></li>
+                </ul>
+
+                <p>This will establish a 70&times;70 or a 2520km&times;2520km parent domain.</p>
+
+                <figure>
+                    <img src="img/dwiz_004.png" alt="Tweaking Parent Domain" width="600" class="img-responsive center-block" />
+                    <figcaption>Tweaking Parent Domain</figcaption>
+                </figure>
+
+            </li>
+
+            <li>
+
+                <p>At this point you can configure your <q>nested</q> domains, d02, d03, etc.</p>
+
+                <p>Click the <q>Nests</q> tab and click <q>New</q>.  Leave all the <q>Nest Properties</q> at their default settings but enter the following under <q>Nest Coordinates</q>:</p>
+
+                <ul>
+                    <li>(LLI) Left: 24</li>
+                    <li>(URI) Right: 47</li>
+                    <li>(URJ) Top: 47</li>
+                    <li>(LLJ) Bottom: 24</li>
+                </ul>
+
+                <figure>
+                    <img src="img/dwiz_005.png" alt="Configuring Domain d02" width="300" class="img-responsive center-block" />
+                    <figcaption>Configuring Domain d02</figcaption>
+                </figure>
+
+                <p>This establishes where in the parent, d01, the new nested domain, d02, sits.</p>
+
+                <p>Click <q>OK</q>:</p>
+
+                <figure>
+                    <img src="img/dwiz_006.png" alt="Domain d01 and d02" width="600" class="img-responsive center-block" />
+                    <figcaption>Domain d01 and d02</figcaption>
+                </figure>
+
+                <p>The above configuration centers d02 within d01, has the same cell dimension (70&times;70), but has three times the resolution (12km&times;12km).</p>
+
+            </li>
+
+            <li>
+
+                <p>We repeat the above step to generate another domain, d03, of resolution 4km&times;4km.</p>
+
+                <figure>
+                    <img src="img/dwiz_007.png" alt="Domain d01, d02, and d03" width="600" class="img-responsive center-block" />
+                    <figcaption>Domain d01, d02, and d03</figcaption>
+                </figure>
+
+                <p>Note:  At this point, another domain, d04, could be formed of size 1.3km&times;1.3km.  However, each subsequent nested domain, even though of the same 70&times;70 dimension, requires <u>3</u> times as much computational effort.  This is due to the requirement that the discrete time step on the finer grids is approximately three times <u>smaller</u> in order to maintain stability
+                (see <a href="https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition">CFL</a> for more information).  If you have the computational power, go for it.  As 500-1000m is the limit of conventional WRF modelling, we do not recommend any more than 4 domains in total.</p>
+
+            </li>
+
+            <li>
+
+                <p>At this point, we click <q>Next</q> and then <q>Localize Domain</q> to interpolate all of the static fields, such as albedo and green fraction, onto our domains.</p>
+
+                <figure>
+                    <img src="img/dwiz_008.png" alt="Domain Localization" width="600" class="img-responsive center-block" />
+                    <figcaption>Domain Localization</figcaption>
+                </figure>
+
+            </li>
+
+            <li>
+
+                <p>Clicking <q>Next</q> at this point brings up the ability to view your domains in Panoply.</p>
+
+                <figure>
+                    <img src="img/dwiz_009.png" alt="Domain Visualization" width="600" class="img-responsive center-block" />
+                    <figcaption>Domain Visualization</figcaption>
+                </figure>
+
+                <p>Note that the version of Panoply hard-coded into UEMS is a much older version, so the interface is slightly different.</p>
+
+                <figure>
+                    <img src="img/dwiz_010.png" alt="Domain d03 Albedo in Panoply" width="600" class="img-responsive center-block" />
+                    <figcaption>Domain d03 Albedo in Panoply</figcaption>
+                </figure>
+
+            </li>
+
+            <li>
+                <p>Click <q>Exit</q> to leave Domain Wizard.  You now have a base directory in the <q>runs</q> directory called <code>atlanta</code>.  You are now ready to prep and simulate your domain.  We are now ready to start actually putting the computers to work.</p>
+            </li>
+
+        </ol>
+    </section>
+
+</section>
+
+<hr/>
+
+<!-- COMPUTATION -->
+
+<section id="computation">
+
+
+    <h2>Computation</h2>
+
+    <section id="chunk">
+
+        <h3>Chunking Your Simulation</h3>
+
+        <p>At this point, everything is configured to run; we simply need to split your simulation into a number of <q>chunks</q>, adjust the default UEMS parameters, prep, and finally run.  Thankfully, <code>emspy</code> provides a script, <code>ems_chunk.py</code> to make this easy.</p>
+
+        <p>To get familiar with this script, type</p>
+
+        <pre>
+ems_chunk.py -h
+</pre>
+
+        <p>Essentially, <code>ems_chunk.py</code> simply requires which domain you want to run and the start and end dates.  e.g.</p>
+
+        <pre>
+ems_chunk.py atlanta 20000101 20000131
+</pre>
+
+        <p>The above will run the Atlanta simulation you setup previously for the month of January 2000.  It will split the run into a series of chunks of 3 days in length, with a suitable <q>spin-up</q> period of 12 hours, and run the chunks in sequence.</p>
+
+        <p>By default, it will be use the tiled version of the CFSR dataset but can use NARR.  This is selected with the <code>-d</code> switch.</p>
+
+        <pre>
+ems_chunk.py -d narrpt atlanta 20000101 20000131
+</pre>
+
+<!--
+        <p>By default, it will (randomly) grab files either from the online repository or from your local NFS data repository, if available and configured.  To force use of your local data, use the <code>--nfs</code> switch.</p>
+
+        <pre>
+ems_chunk.py --nfs -d narr atlanta 20000101 20000131
+</pre>
+-->
+
+        <p>By default, it will run all the nested domains you have configured.  If you have setup, say, d01, d02, d03, d04, but only want to solve up to d03, you can pass the switch <code>-n</code></p>
+
+        <pre>
+ems_chunk.py -n 3 -d narrpt atlanta 20000101 20000131
+</pre>
+
+        <p><code>ems_chunk.py</code> can be run in <q>prep</q>-only mode.  That is, skip actually running each chunk, in case you want to run them all later, perhaps after you've downloaded all the required tiles.  Just pass a <code>-s</code> switch</p>
+
+        <pre>
+ems_chunk.py -s -d narrpt atlanta 20000101 20000131
+</pre>
+
+        <p>Finally, if you try to re-run, <code>ems_chunk.py</code> will first check the directories to see if there was a chunk has been already prep'd and run and skip them if so.  This allows you to repeatedly start and stop <code>ems_chunk.py></code> and it will pick up approximately where you left off.  If however, you want to <u>force</u> it to prep and run, overwriting whatever work has been done, just add a <code>-f</code> switch</p>
+
+        <pre>
+ems_chunk.py -f -d narrpt atlanta 20000101 20000131
+</pre>
+
+        <p>You can use Panoply to view your wrfout files.  They can be found in the <code>wrfprd</code> directory of each chunk's run directory, e.g. <code>atlanta_20000101</code>.</p>
+
+        <figure>
+            <img src="img/T2_wrf.png" alt="Atlanta WRF Drybulb Temperature" width="600" class="img-responsive center-block" />
+            <figcaption>Atlanta WRF Drybulb Temperature</figcaption>
+        </figure>
+
+        <p>Also, a log file with some of the gory details is created in the <code>$EMS_RUN</code> directory labelled e.g. <code>atlanta.log</code>.</p>
+
+        <p>If you want to start <code>ems_chunk.py</code> in a terminal (perhaps on a remote machine) and want to later close that terminal, prepend your command with <code>nohup</code> and append an <code>&amp;</code>.  This will ensure that your simulation is not interrupted.  All the typical text output will go to a file called <code>nohup.out</code>.</p>
+
+        <pre>
+nohup ems_chunk.py atlanta 20000101 20000131 &
+</pre>
+
+    </section>
+
+    <section id="timing">
+
+        <h3>Timing Your Simulation</h3>
+
+        <p>A typical simulation with three domains (d01/36km, d02/12km, d03/4km) will take on order 2 hours to run a single three-day chunk on a standard eight-core linux machine.  As there are 122 chunks in a year, that means a single year simulation will take approximately 12 days.  If an additional nest is added, (d04/1km), you will see approximately a three-fold increase in total simulation time, requiring approximately a month to complete a year of simulation.</p>
+
+        <p>The simulation time can be reduced by throwing more computers at it via a cluster or simple network of computers.  While this feature has not been coded in <code>ems_chunk.py</code> at the moment, it is on the wish list.</p>
+
+    </section>
+
+    <section id="advanced">
+        <h3>Configuring your Simulation (Advanced)</h3>
+
+        <p>
+            The code has been established with a number of fixed, robust configuration parameters to select e.g. radiation schemes.  There are more parameterization schemes than you can shake a stick at.  UEMS provides well-documented files that are stored in the e.g. <code>atlanta/conf/ems_run</code>.  Explore the various files and options available.
+        </p>
+
+        <p>
+            If you find that you need a certain configuration option implemented.  You have two options:
+            <ul>
+                <li>
+                    <strong>Before</strong> running <code>ems_chunk.py</code>, manual edit the relevant files.  However, you will have to do this every time you create a new domain using <code>dwiz</code>.
+                </li>
+                <li>
+                    Alternatively, edit <code>ems_chunk.py</code> itself to automatically modify the desired config files.   See the relevant lines in the <a href="https://github.com/klimaat/emspy/blob/master/ems_dechunk.py">code</a>.
+                </li>
+            </ul>
+        </p>
+
+    </section>
+</section>
+
+<hr/>
+
+<!-- POST-PROCESS -->
+
+<section id="postp">
+
+    <h2>Post-Process</h2>
+
+    <section id="dechunk">
+
+        <h3>De-chunking Your Simulation</h3>
+
+        <p>At this point you have run a simulation for a period of time and want to <q>de-chunk</q>.  The counter to <code>ems_chunk.py</code> is <code>ems_dechunk.py</code>.  This tool allows you to repeatedly mine your simulation to generate a time series (in CSV format) at various locations in your domain.</p>
+
+        <pre>
+ems_dechunk.py -h
+</pre>
+
+        <p>The key parameters to <code>ems_dechunk.py</code> are the domain to operate on, e.g. atlanta, and the location in the domain that you are interested in.  Location is specified either through either  grid indices (i,j), switch <code>-ij</code>, or explicit geographical coordinates (latitude, longitude), switch <code>-ll</code>.  If geographical units are chosen, the latitude and longitude <u>snap</u> to the nearest grid point.</p>
+
+        <p>For example, the center of the 70&times;70 Atlanta grid could be generated via</p>
+
+        <pre>
+ems_dechunk.py atlanta -ij 35 35
+</pre>
+        <p>Or via geographical coordinates</p>
+
+        <pre>
+ems_dechunk.py atlanta -ll 33.834 -84.329
+</pre>
+
+        <p>As WRF outputs data as the <u>centers</u> of cells, for a 70&times;70 grid, there are 69&times;69 cells.</p>
+
+        <p>The indexing convention is <q>flipped matrix</q>. That is, (i,j)=(1,1) is the southwest point of the grid, (i,j)=(69,1) is the northwest point, (i,j)=(1,69) is the southeast point, while (i,j)=(69,69) is the northeast point.  </p>
+
+
+        <figure>
+            <img src="img/grid.svg" alt="Grid Indexing"" class="img-responsive center-block" />
+            <figcaption>Grid indexing</figcaption>
+        </figure>
+
+
+        <p>By default, the finest nest domain will be extracted.  If a coarser grid is desired, perhaps for comparing 1km results to 4km results, simply specify the nest desired with the <code>-n</code> switch.</p>
+
+        <pre>
+ems_dechunk.py atlanta -n 3 -ll 33.834 -84.329
+</pre>
+
+        <p>The resulting CSV file, e.g. <code>atlanta_i35_j35.csv</code> will be located found in the <code>$EMS_RUN</code> directory.  As it stands, a subset of the full UEMS list of variables is exported, see Table 1, though this list is easily expanded (see <a href="https://github.com/klimaat/emspy/blob/master/ems_dechunk.py">code</a>). Also, note that <u>all dates and times are Universal Coordinate Time (UTC)</u>.</p>
+
+        <table class="table table-hover">
+            <caption>Contents of CSV file</caption>
+            <thead>
+                <tr>
+                    <th>Variable</th><th>Units</th><th>Derived From</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Screen (2m) drybulb temperature</td><td>&deg;C</td><td>T2</td></tr>
+                <tr><td>Screen (2m) humidity ratio</td><td>g/kg of dry air</td><td>Q2</td></tr>
+                <tr><td>Screen (2m) relative humidity</td><td>%</td><td>RH02</td></tr>
+                <tr><td>Surface pressure</td><td>Pa</td><td>PSFC</td></tr>
+                <tr><td>Wind speed (10m)</td><td>m/s</td><td>U10, V10</td></tr>
+                <tr><td>Wind direction (10m)</td><td>&deg;</td><td>U10, V10</td></tr>
+                <tr><td>Global horizontal shortwave down</td><td>W&#183;hr/m&#178;</td><td>SWDOWN</td></tr>
+                <tr><td>Rainfall</td><td>mm</td><td>TACC_PRECIP</td></tr>
+                <tr><td>Snowfall (liquid equiv.)</td><td>mm</td><td>TACC_SNOW</td></tr>
+            </tbody>
+        </table>
+
+    </section>
+
+</section>
+
+<hr/>
+
+<!-- FUTURE PLANS -->
+
+<section id="future">
+    <h2>
+        Future Plans
+    </h2>
+
+    <ul>
+        <li>
+            Tying together the output of <code>emspy</code> with a toolkit to generate the climatic data tables as provided by <a href="https://www.ashrae.org/resources--publications/bookstore/climate-data-center#ch14">ASHRAE</a>.
+        </li>
+        <li>
+            Improving the representation of solar radiation (e.g. aerosols) using the methdology of <a href="http://journals.ametsoc.org/doi/abs/10.1175/BAMS-D-14-00279.1">WRF Solar</a>.
+        </li>
+    </ul>
+</section>
+<!-- FEEDBACK -->
+
+<section id="feedback">
+
+        <h2>Feedback</h2>
+
+        <p>That's it!  Please report any errors, comments, suggestions, concerns to the maintainers, <a href="mailto:ems@klimaat.ca">Klimaat</a> or add to the issue tracker on <a href="https://github.com/klimaat/emspy/issues">github</a>.</p>
+
+</section>
+
+<hr/>
+
+<!-- FOOTER -->
+
+<footer>
+        <div class="text-muted">
+            <small>
+                Project sponsored by <a href="https://www.ashrae.org/">ASHRAE</a> &#8226; Page maintained by <a href="http://klimaat.ca">Klimaat</a> &#8226; Code licensed under <a href="LICENSE.txt" target="_blank">MIT</a> &#8226;  Docs licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a>
+            </small>
+
+        </div>
+</footer>
+
+</div>
+</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

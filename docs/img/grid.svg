@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" height="500" width="520" >
+ <g style="fill-opacity:1.0; stroke:black;
+  stroke-width:1;">
+  <line x1="80" y1="440" x2="240" y2="440" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="400" x2="240" y2="400" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="360" x2="240" y2="360" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="320" x2="240" y2="320" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="440" x2="80" y2="280" style="stroke:#000;stroke-width:1"/>
+  <line x1="120" y1="440" x2="120" y2="280" style="stroke:#000;stroke-width:1"/>
+  <line x1="160" y1="440" x2="160" y2="280" style="stroke:#000;stroke-width:1"/>
+  <line x1="200" y1="440" x2="200" y2="280" style="stroke:#000;stroke-width:1"/>
+  <line x1="320" y1="440" x2="480" y2="440" style="stroke:#000;stroke-width:1"/>
+  <line x1="320" y1="400" x2="480" y2="400" style="stroke:#000;stroke-width:1"/>
+  <line x1="320" y1="360" x2="480" y2="360" style="stroke:#000;stroke-width:1"/>
+  <line x1="320" y1="320" x2="480" y2="320" style="stroke:#000;stroke-width:1"/>
+  <line x1="360" y1="440" x2="360" y2="280" style="stroke:#000;stroke-width:1"/>
+  <line x1="400" y1="440" x2="400" y2="280" style="stroke:#000;stroke-width:1"/>
+  <line x1="440" y1="440" x2="440" y2="280" style="stroke:#000;stroke-width:1"/>
+  <line x1="480" y1="440" x2="480" y2="280" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="160" x2="240" y2="160" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="120" x2="240" y2="120" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="80" x2="240" y2="80" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="40" x2="240" y2="40" style="stroke:#000;stroke-width:1"/>
+  <line x1="80" y1="40" x2="80" y2="200" style="stroke:#000;stroke-width:1"/>
+  <line x1="120" y1="40" x2="120" y2="200" style="stroke:#000;stroke-width:1"/>
+  <line x1="160" y1="40" x2="160" y2="200" style="stroke:#000;stroke-width:1"/>
+  <line x1="200" y1="40" x2="200" y2="200" style="stroke:#000;stroke-width:1"/>
+  <line x1="320" y1="160" x2="480" y2="160" style="stroke:#000;stroke-width:1"/>
+  <line x1="320" y1="120" x2="480" y2="120" style="stroke:#000;stroke-width:1"/>
+  <line x1="320" y1="80" x2="480" y2="80" style="stroke:#000;stroke-width:1"/>
+  <line x1="320" y1="40" x2="480" y2="40" style="stroke:#000;stroke-width:1"/>
+  <line x1="360" y1="40" x2="360" y2="200" style="stroke:#000;stroke-width:1"/>
+  <line x1="400" y1="40" x2="400" y2="200" style="stroke:#000;stroke-width:1"/>
+  <line x1="440" y1="40" x2="440" y2="200" style="stroke:#000;stroke-width:1"/>
+  <line x1="480" y1="40" x2="480" y2="200" style="stroke:#000;stroke-width:1"/>
+  <line x1="240" y1="440" x2="320" y2="440" style="stroke:#888;stroke-width:1;stroke-dasharray: 5,5"/>
+  <line x1="240" y1="40" x2="320" y2="40" style="stroke:#888;stroke-width:1;stroke-dasharray: 5,5"/>
+  <line x1="80" y1="200" x2="80" y2="280" style="stroke:#888;stroke-width:1;stroke-dasharray: 5,5"/>
+  <line x1="480" y1="200" x2="480" y2="280" style="stroke:#888;stroke-width:1;stroke-dasharray: 5,5"/>
+  <circle cx="100" cy="60" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="100" cy="300" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="340" cy="300" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="340" cy="60" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="100" cy="100" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="100" cy="340" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="340" cy="340" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="340" cy="100" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="100" cy="140" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="100" cy="380" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="340" cy="380" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="340" cy="140" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="100" cy="180" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="100" cy="420" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="340" cy="420" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="340" cy="180" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="140" cy="60" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="140" cy="300" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="380" cy="300" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="380" cy="60" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="140" cy="100" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="140" cy="340" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="380" cy="340" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="380" cy="100" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="140" cy="140" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="140" cy="380" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="380" cy="380" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="380" cy="140" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="140" cy="180" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="140" cy="420" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="380" cy="420" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="380" cy="180" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="180" cy="60" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="180" cy="300" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="420" cy="300" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="420" cy="60" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="180" cy="100" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="180" cy="340" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="420" cy="340" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="420" cy="100" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="180" cy="140" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="180" cy="380" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="420" cy="380" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="420" cy="140" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="180" cy="180" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="180" cy="420" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="420" cy="420" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="420" cy="180" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="220" cy="60" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="220" cy="300" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="460" cy="300" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="460" cy="60" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="220" cy="100" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="220" cy="340" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="460" cy="340" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="460" cy="100" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="220" cy="140" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="220" cy="380" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="460" cy="380" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="460" cy="140" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="220" cy="180" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="220" cy="420" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="460" cy="420" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <circle cx="460" cy="180" r="4"
+    style="fill:#888;stroke:#000;stroke-width:1"  />
+  <line x1="60" y1="420" x2="100" y2="420" style="stroke:#000;stroke-width:1"/>
+  <text x="60" y="425" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#000">
+   i=1
+  </text>
+  <line x1="100" y1="460" x2="100" y2="420" style="stroke:#000;stroke-width:1"/>
+  <text x="100" y="480" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#000">
+   j=1
+  </text>
+  <line x1="60" y1="60" x2="100" y2="60" style="stroke:#000;stroke-width:1"/>
+  <text x="60" y="65" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#000">
+   i=69
+  </text>
+  <line x1="460" y1="460" x2="460" y2="420" style="stroke:#000;stroke-width:1"/>
+  <text x="460" y="480" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#000">
+   j=69
+  </text>
+  <text x="285" y="25" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#000">
+   N
+  </text>
+  <text x="285" y="470" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#000">
+   S
+  </text>
+  <text x="505" y="255" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#000">
+   E
+  </text>
+  <text x="60" y="255" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#000">
+   W
+  </text>
+ </g>
+</svg>

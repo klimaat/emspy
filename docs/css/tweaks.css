@@ -1,0 +1,151 @@
+body {
+  position: relative;
+  counter-reset: figure;
+}
+
+h1 {
+    counter-reset: section;
+}
+
+h2 {
+    counter-reset: subsection;
+}
+
+h2::before {
+    content: counter(section) ". ";
+    counter-increment: section;
+    font-size: smaller;
+    color: #888;
+}
+
+
+h3::before {
+    content: counter(section) "." counter(subsection) " ";
+    counter-increment: subsection;
+    font-size: smaller;
+    color: #888;
+}
+
+figure {
+    margin: 0px 0px 10px;
+    page-break-inside: avoid;
+}
+
+figcaption::before {
+    content: "Figure " counter(figure) ": ";
+    counter-increment: figure;
+}
+
+figcaption {
+  text-align: center;
+  font-size: medium;
+}
+
+table {
+    margin: 0px 0px 10px;
+    page-break-inside: avoid;
+}
+
+caption::before {
+    content: "Table " counter(table) ": ";
+    counter-increment: table;
+}
+
+caption {
+  text-align: center;
+  color: #333;
+  font-size: medium;
+}
+
+code {
+    color: #333;
+    background-color: #FFF;
+    font-size: 1em;
+    margin: 0px;
+    padding: 0px;
+}
+
+hr {
+    width: 100px;
+    color: #888;
+}
+
+.nav {
+    counter-reset: section;
+}
+
+.nav a:before {
+    content: counter(section) ". ";
+    counter-increment: section;
+}
+
+.nav .active {
+    font-weight: bold;
+}
+
+.nav .nav {
+    display: none;
+    counter-reset: subsection;
+}
+
+.nav .active .nav {
+    display: block;
+}
+
+.nav .nav a {
+    font-weight: normal;
+    font-size: smaller;
+    font-style: italic;
+    padding-left: 20px;
+}
+
+.nav .nav a:before {
+    content: counter(section) "." counter(subsection) " ";
+    counter-increment: subsection;
+}
+
+.nav .nav span {
+    margin: 0 5px 0 2px;
+}
+
+.nav .nav .active a,
+.nav .nav .active:hover a,
+.nav .nav .active:focus a {
+    font-weight: bold;
+}
+
+.affix-top {
+    position: relative;
+}
+
+.affix {
+    top: 20px;
+}
+
+.affix-bottom {
+    position: absolute;
+}
+
+footer {
+    height: 40px;
+}
+
+footer p {
+    line-height: 40px;
+    margin-bottom: 0;
+}
+
+#update a:link {
+    color: #fff;
+    text-decoration: underline;
+/*
+    background-color: white;
+*/
+}
+
+#update a:visited {
+    color: #eee;
+    text-decoration: underline;
+}
+
+
