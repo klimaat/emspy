@@ -8,9 +8,9 @@ A collection of Python scripts to aide in mesoscale modelling using UEMS:
 
 Long-winded instructions can be found here:
 
-<http://klimaat.ca/emspy>
+<https://klimaat.github.io/emspy>
 
 ## Feedback
 
-Please contact the maintainer at <mailto:emspy@klimaat.ca>.
+Please contact the maintainer at <emspy@klimaat.ca>.
 
