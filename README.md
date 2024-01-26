@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This repository has been archived.
+
 # emspy
 
 A collection of Python scripts to aide in mesoscale modelling using UEMS:
